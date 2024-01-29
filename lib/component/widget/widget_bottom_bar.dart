@@ -56,7 +56,10 @@ class BottomBar extends StatelessWidget {
                 const Divider(),
                 Row(
                   children: [
-                    const Icon(Icons.airplane_ticket),
+                    const Icon(
+                      Icons.airplane_ticket,
+                      color: ColorSystem.blue,
+                    ),
                     const SizedBox(width: 10),
                     Text(
                       "Voucher",
