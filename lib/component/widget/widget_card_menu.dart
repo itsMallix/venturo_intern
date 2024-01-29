@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_venturo/component/theme_colors.dart';
-import 'package:flutter_venturo/component/theme_text.dart';
-import 'package:flutter_venturo/controller/meal_controller.dart';
+import 'package:flutter_venturo/component/theme/theme_colors.dart';
+import 'package:flutter_venturo/component/theme/theme_text.dart';
+import 'package:flutter_venturo/controller/api_controller.dart';
 import 'package:flutter_venturo/models/model_menu.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 
@@ -12,7 +12,7 @@ class MenuCard extends StatelessWidget {
     required this.mealController,
   });
 
-  final Data menuDatas;
+  final DataMenu menuDatas;
   final MealController mealController;
 
   @override
@@ -21,7 +21,11 @@ class MenuCard extends StatelessWidget {
       () => Card(
         color: ColorSystem.grey,
         child: Padding(
-          padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5),
+          padding: const EdgeInsets.only(
+            left: 5,
+            top: 5,
+            bottom: 5,
+          ),
           child: Row(
             children: [
               Container(
@@ -56,7 +60,7 @@ class MenuCard extends StatelessWidget {
                         Icons.edit_note_rounded,
                         color: ColorSystem.blue,
                       ),
-                      SizedBox(width: 5),
+                      const SizedBox(width: 5),
                       Text(
                         "${mealController.notes[menuDatas.id!] ?? "Tambahkan Catatan"}",
                       )

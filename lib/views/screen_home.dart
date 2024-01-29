@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_venturo/component/theme_colors.dart';
-import 'package:flutter_venturo/component/theme_text.dart';
+import 'package:flutter_venturo/component/theme/theme_colors.dart';
+import 'package:flutter_venturo/component/theme/theme_text.dart';
 import 'package:flutter_venturo/component/widget/widget_bottom_bar.dart';
 import 'package:flutter_venturo/component/widget/widget_card_menu.dart';
-import 'package:flutter_venturo/controller/meal_controller.dart';
+import 'package:flutter_venturo/controller/api_controller.dart';
 import 'package:get/get.dart';
 
 class ScreenHome extends StatelessWidget {
   final MealController mealController = Get.find();
   final voucherController = TextEditingController();
   final noteController = TextEditingController();
+
+  ScreenHome({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,11 +40,15 @@ class ScreenHome extends StatelessWidget {
                               width: double.infinity,
                               child: Image.network(menuDatas.gambar!),
                             ),
-                            TextField(
-                              controller: noteController,
-                              decoration: const InputDecoration(
-                                hintText: "add Note",
-                                hintStyle: TextSystem.content,
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: TextField(
+                                controller: noteController,
+                                decoration: const InputDecoration(
+                                  hintText: "tambahkan catatan",
+                                  hintStyle: TextSystem.content,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 10),

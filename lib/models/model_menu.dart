@@ -6,7 +6,7 @@ String menuModelToJson(MenuModel data) => json.encode(data.toJson());
 
 class MenuModel {
   int? statusCode;
-  List<Data>? datas;
+  List<DataMenu>? datas;
 
   MenuModel({
     this.statusCode,
@@ -17,7 +17,8 @@ class MenuModel {
         statusCode: json["status_code"],
         datas: json["datas"] == null
             ? []
-            : List<Data>.from(json["datas"]!.map((x) => Data.fromJson(x))),
+            : List<DataMenu>.from(
+                json["datas"]!.map((x) => DataMenu.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -28,14 +29,14 @@ class MenuModel {
       };
 }
 
-class Data {
+class DataMenu {
   int? id;
   String? nama;
   int? harga;
   String? tipe;
   String? gambar;
 
-  Data({
+  DataMenu({
     this.id,
     this.nama,
     this.harga,
@@ -43,7 +44,7 @@ class Data {
     this.gambar,
   });
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
+  factory DataMenu.fromJson(Map<String, dynamic> json) => DataMenu(
         id: json["id"],
         nama: json["nama"],
         harga: json["harga"],

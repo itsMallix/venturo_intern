@@ -7,7 +7,7 @@ String voucherModelToJson(VoucherModel data) => json.encode(data.toJson());
 
 class VoucherModel {
   int? statusCode;
-  List<Data>? datas;
+  List<DataVoucher>? datas;
 
   VoucherModel({
     this.statusCode,
@@ -18,7 +18,8 @@ class VoucherModel {
         statusCode: json["status_code"],
         datas: json["datas"] == null
             ? []
-            : List<Data>.from(json["datas"]!.map((x) => Data.fromJson(x))),
+            : List<DataVoucher>.from(
+                json["datas"]!.map((x) => DataVoucher.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -29,14 +30,14 @@ class VoucherModel {
       };
 }
 
-class Data {
+class DataVoucher {
   int? id;
   String? kode;
   int? nominal;
   DateTime? createdAt;
   DateTime? updatedAt;
 
-  Data({
+  DataVoucher({
     this.id,
     this.kode,
     this.nominal,
@@ -44,7 +45,7 @@ class Data {
     this.updatedAt,
   });
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
+  factory DataVoucher.fromJson(Map<String, dynamic> json) => DataVoucher(
         id: json["id"],
         kode: json["kode"],
         nominal: json["nominal"],

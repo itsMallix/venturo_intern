@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_venturo/component/theme_colors.dart';
-import 'package:flutter_venturo/component/theme_text.dart';
-import 'package:flutter_venturo/controller/meal_controller.dart';
+import 'package:flutter_venturo/component/theme/theme_colors.dart';
+import 'package:flutter_venturo/component/theme/theme_text.dart';
+import 'package:flutter_venturo/component/widget/widget_bottom_sheet_voucher.dart';
+import 'package:flutter_venturo/controller/api_controller.dart';
+import 'package:flutter_venturo/views/screen_checkout.dart';
 import 'package:get/get.dart';
 
 class BottomBar extends StatelessWidget {
@@ -52,7 +54,6 @@ class BottomBar extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 const Divider(),
-                const SizedBox(height: 5),
                 Row(
                   children: [
                     const Icon(Icons.airplane_ticket),
@@ -67,88 +68,47 @@ class BottomBar extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         Get.bottomSheet(
-                          Container(
-                            padding: const EdgeInsets.all(20),
-                            height: 215,
-                            width: double.infinity,
-                            decoration: const BoxDecoration(
-                              color: ColorSystem.white,
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(30),
-                              ),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.airplane_ticket,
-                                      color: ColorSystem.blue,
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Text(
-                                      "Punya Kode Voucher?",
-                                      style: TextSystem.subtitle.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                const Text(
-                                  "Masukkan kode voucher disini",
-                                  style: TextSystem.content,
-                                ),
-                                TextField(
-                                  controller: voucherController,
-                                  cursorColor: ColorSystem.blue,
-                                  style: TextSystem.content,
-                                  decoration: InputDecoration(
-                                    focusColor: ColorSystem.blue,
-                                    hintText: "masukkan kode voucer",
-                                    hintStyle: TextSystem.content,
-                                    suffixIcon: IconButton(
-                                      onPressed: () {
-                                        voucherController.clear();
-                                      },
-                                      icon: const Icon(
-                                        Icons.remove_circle,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 15),
-                                GestureDetector(
-                                  onTap: () {},
-                                  child: Container(
-                                    height: 45,
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                      color: ColorSystem.blue,
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                    child: Text(
-                                      "Validasi Voucher",
-                                      style: TextSystem.subtitle.copyWith(
-                                        color: ColorSystem.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                          VoucherBottomSheet(
+                            voucherController: voucherController,
+                            mealController: mealController,
                           ),
                         );
                       },
-                      child: Text(
-                        "Input Voucher  >",
-                        style: TextSystem.content.copyWith(
-                          color: Colors.grey,
-                        ),
+                      child: Row(
+                        children: [
+                          if (voucherController.text.isEmpty)
+                            Text(
+                              "Input Voucher",
+                              style: TextSystem.content.copyWith(
+                                color: Colors.grey,
+                              ),
+                            ),
+                          if (voucherController.text.isNotEmpty)
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  voucherController.text,
+                                  style: TextSystem.content,
+                                ),
+                                if (mealController.selectedVoucher.value !=
+                                    null)
+                                  Text(
+                                    "Rp ${mealController.selectedVoucher.value!.nominal}",
+                                    style: TextSystem.content.copyWith(
+                                      color: Colors.red,
+                                    ),
+                                  )
+                              ],
+                            ),
+                          const SizedBox(width: 5),
+                          Text(
+                            ">",
+                            style: TextSystem.content.copyWith(
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
                       ),
                     )
                   ],
@@ -167,6 +127,13 @@ class BottomBar extends StatelessWidget {
                 borderRadius: BorderRadius.vertical(
                   top: Radius.circular(30),
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey,
+                    offset: Offset(0, -2),
+                    blurRadius: 5,
+                  )
+                ],
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -188,7 +155,7 @@ class BottomBar extends StatelessWidget {
                         style: TextSystem.content,
                       ),
                       Text(
-                        "${mealController.totalPrice.value}",
+                        "Rp ${mealController.totalPrice.value}",
                         style: TextSystem.subtitle.copyWith(
                           color: ColorSystem.blue,
                           fontWeight: FontWeight.bold,
@@ -198,18 +165,37 @@ class BottomBar extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(width: 10),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: ColorSystem.blue,
-                    ),
-                    onPressed: () {},
-                    child: Text(
-                      "Pesan Sekarang",
-                      style: TextSystem.content.copyWith(
-                        color: ColorSystem.white,
+                  if (mealController.quantities.isNotEmpty)
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: ColorSystem.blue,
+                      ),
+                      onPressed: () {
+                        Get.to(() => ScreenCheckout(
+                              mealController: mealController,
+                            ));
+                      },
+                      child: Text(
+                        "Pesan Sekarang",
+                        style: TextSystem.content.copyWith(
+                          color: ColorSystem.white,
+                        ),
                       ),
                     ),
-                  ),
+                  const SizedBox(width: 5),
+                  if (mealController.quantities.isEmpty)
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey,
+                      ),
+                      onPressed: () {},
+                      child: Text(
+                        "Pesan Sekarang",
+                        style: TextSystem.content.copyWith(
+                          color: ColorSystem.white,
+                        ),
+                      ),
+                    ),
                   const SizedBox(width: 5),
                 ],
               ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_venturo/controller/meal_controller.dart';
+import 'package:flutter_venturo/controller/api_controller.dart';
 import 'package:flutter_venturo/views/screen_home.dart';
 import 'package:get/get.dart';
 
@@ -9,6 +9,8 @@ void main() {
 
 class MyApp extends StatelessWidget {
   final mealController = Get.put(MealController());
+
+  MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
