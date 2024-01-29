@@ -29,14 +29,14 @@ class ScreenHome extends StatelessWidget {
                   return GestureDetector(
                     onTap: () {
                       Get.defaultDialog(
-                        title: menuDatas.nama,
+                        title: menuDatas.nama!,
                         content: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             SizedBox(
                               height: 100,
                               width: double.infinity,
-                              child: Image.network(menuDatas.gambar),
+                              child: Image.network(menuDatas.gambar!),
                             ),
                             TextField(
                               controller: noteController,
@@ -50,7 +50,12 @@ class ScreenHome extends StatelessWidget {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: ColorSystem.blue,
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                mealController.addNotes(
+                                  menuDatas.id!,
+                                  noteController.text,
+                                );
+                              },
                               child: Text(
                                 "Save Changes",
                                 style: TextSystem.subtitle.copyWith(
@@ -70,11 +75,9 @@ class ScreenHome extends StatelessWidget {
                 },
               ),
       ),
-      bottomNavigationBar: Obx(
-        () => BottomBar(
-          mealController: mealController,
-          voucherController: voucherController,
-        ),
+      bottomNavigationBar: BottomBar(
+        mealController: mealController,
+        voucherController: voucherController,
       ),
     );
   }

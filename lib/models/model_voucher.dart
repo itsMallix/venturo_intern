@@ -1,53 +1,66 @@
+import 'dart:convert';
+
+VoucherModel voucherModelFromJson(String str) =>
+    VoucherModel.fromJson(json.decode(str));
+
+String voucherModelToJson(VoucherModel data) => json.encode(data.toJson());
+
 class VoucherModel {
+  int? statusCode;
+  List<Data>? datas;
+
   VoucherModel({
-    required this.statusCode,
-    required this.datas,
+    this.statusCode,
+    this.datas,
   });
-  late final int statusCode;
-  late final List<Datas> datas;
 
-  VoucherModel.fromJson(Map<String, dynamic> json) {
-    statusCode = json['status_code'];
-    datas = List.from(json['datas']).map((e) => Datas.fromJson(e)).toList();
-  }
+  factory VoucherModel.fromJson(Map<String, dynamic> json) => VoucherModel(
+        statusCode: json["status_code"],
+        datas: json["datas"] == null
+            ? []
+            : List<Data>.from(json["datas"]!.map((x) => Data.fromJson(x))),
+      );
 
-  Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['status_code'] = statusCode;
-    _data['datas'] = datas.map((e) => e.toJson()).toList();
-    return _data;
-  }
+  Map<String, dynamic> toJson() => {
+        "status_code": statusCode,
+        "datas": datas == null
+            ? []
+            : List<dynamic>.from(datas!.map((x) => x.toJson())),
+      };
 }
 
-class Datas {
-  Datas({
-    required this.id,
-    required this.kode,
-    required this.nominal,
-    required this.createdAt,
-    required this.updatedAt,
+class Data {
+  int? id;
+  String? kode;
+  int? nominal;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+
+  Data({
+    this.id,
+    this.kode,
+    this.nominal,
+    this.createdAt,
+    this.updatedAt,
   });
-  late final int id;
-  late final String kode;
-  late final int nominal;
-  late final String createdAt;
-  late final String updatedAt;
 
-  Datas.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    kode = json['kode'];
-    nominal = json['nominal'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-  }
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
+        id: json["id"],
+        kode: json["kode"],
+        nominal: json["nominal"],
+        createdAt: json["created_at"] == null
+            ? null
+            : DateTime.parse(json["created_at"]),
+        updatedAt: json["updated_at"] == null
+            ? null
+            : DateTime.parse(json["updated_at"]),
+      );
 
-  Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['id'] = id;
-    _data['kode'] = kode;
-    _data['nominal'] = nominal;
-    _data['created_at'] = createdAt;
-    _data['updated_at'] = updatedAt;
-    return _data;
-  }
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "kode": kode,
+        "nominal": nominal,
+        "created_at": createdAt?.toIso8601String(),
+        "updated_at": updatedAt?.toIso8601String(),
+      };
 }

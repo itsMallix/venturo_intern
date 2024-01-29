@@ -1,53 +1,61 @@
+import 'dart:convert';
+
+MenuModel menuModelFromJson(String str) => MenuModel.fromJson(json.decode(str));
+
+String menuModelToJson(MenuModel data) => json.encode(data.toJson());
+
 class MenuModel {
+  int? statusCode;
+  List<Data>? datas;
+
   MenuModel({
-    required this.statusCode,
-    required this.datas,
+    this.statusCode,
+    this.datas,
   });
-  late final int statusCode;
-  late final List<Datas> datas;
 
-  MenuModel.fromJson(Map<String, dynamic> json) {
-    statusCode = json['status_code'];
-    datas = List.from(json['datas']).map((e) => Datas.fromJson(e)).toList();
-  }
+  factory MenuModel.fromJson(Map<String, dynamic> json) => MenuModel(
+        statusCode: json["status_code"],
+        datas: json["datas"] == null
+            ? []
+            : List<Data>.from(json["datas"]!.map((x) => Data.fromJson(x))),
+      );
 
-  Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['status_code'] = statusCode;
-    _data['datas'] = datas.map((e) => e.toJson()).toList();
-    return _data;
-  }
+  Map<String, dynamic> toJson() => {
+        "status_code": statusCode,
+        "datas": datas == null
+            ? []
+            : List<dynamic>.from(datas!.map((x) => x.toJson())),
+      };
 }
 
-class Datas {
-  Datas({
-    required this.id,
-    required this.nama,
-    required this.harga,
-    required this.tipe,
-    required this.gambar,
+class Data {
+  int? id;
+  String? nama;
+  int? harga;
+  String? tipe;
+  String? gambar;
+
+  Data({
+    this.id,
+    this.nama,
+    this.harga,
+    this.tipe,
+    this.gambar,
   });
-  late final int id;
-  late final String nama;
-  late final int harga;
-  late final String tipe;
-  late final String gambar;
 
-  Datas.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    nama = json['nama'];
-    harga = json['harga'];
-    tipe = json['tipe'];
-    gambar = json['gambar'];
-  }
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
+        id: json["id"],
+        nama: json["nama"],
+        harga: json["harga"],
+        tipe: json["tipe"],
+        gambar: json["gambar"],
+      );
 
-  Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['id'] = id;
-    _data['nama'] = nama;
-    _data['harga'] = harga;
-    _data['tipe'] = tipe;
-    _data['gambar'] = gambar;
-    return _data;
-  }
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "nama": nama,
+        "harga": harga,
+        "tipe": tipe,
+        "gambar": gambar,
+      };
 }
