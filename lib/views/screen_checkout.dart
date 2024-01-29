@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_venturo/component/theme/theme_colors.dart';
 import 'package:flutter_venturo/component/theme/theme_text.dart';
+import 'package:flutter_venturo/component/widget/widget_bottom_bar.dart';
+import 'package:flutter_venturo/component/widget/widget_bottom_checkout.dart';
 import 'package:flutter_venturo/controller/api_controller.dart';
 import 'package:get/get.dart';
 
 class ScreenCheckout extends StatelessWidget {
   final MealController mealController;
 
-  const ScreenCheckout({Key? key, required this.mealController})
-      : super(key: key);
+  ScreenCheckout({Key? key, required this.mealController}) : super(key: key);
+
+  final voucherController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -109,6 +112,10 @@ class ScreenCheckout extends StatelessWidget {
                   );
                 },
               ),
+      ),
+      bottomNavigationBar: BottomBarCheckout(
+        mealController: mealController,
+        voucherController: voucherController,
       ),
     );
   }

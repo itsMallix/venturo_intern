@@ -3,7 +3,6 @@ import 'package:flutter_venturo/component/theme/theme_colors.dart';
 import 'package:flutter_venturo/component/theme/theme_text.dart';
 import 'package:flutter_venturo/controller/api_controller.dart';
 import 'package:flutter_venturo/models/model_voucher.dart';
-import 'package:get/get.dart';
 
 class VoucherBottomSheet extends StatelessWidget {
   const VoucherBottomSheet({

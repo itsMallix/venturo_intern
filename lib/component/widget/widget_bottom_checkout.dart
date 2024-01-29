@@ -4,10 +4,11 @@ import 'package:flutter_venturo/component/theme/theme_text.dart';
 import 'package:flutter_venturo/component/widget/widget_bottom_sheet_voucher.dart';
 import 'package:flutter_venturo/controller/api_controller.dart';
 import 'package:flutter_venturo/views/screen_checkout.dart';
+import 'package:flutter_venturo/views/screen_home.dart';
 import 'package:get/get.dart';
 
-class BottomBar extends StatelessWidget {
-  const BottomBar({
+class BottomBarCheckout extends StatelessWidget {
+  const BottomBarCheckout({
     super.key,
     required this.mealController,
     required this.voucherController,
@@ -171,38 +172,74 @@ class BottomBar extends StatelessWidget {
                         backgroundColor: ColorSystem.blue,
                       ),
                       onPressed: () {
-                        // if (mealController.isCheckout.value) {
-                        //   mealController.resetOrderData();
-                        //   Get.to(
-                        //     () => ScreenCheckout(
-                        //       mealController: mealController,
-                        //     ),
-                        //   );
-                        // } else {
-                        //   mealController.postOrder();
-                        // }
-                        Get.to(
-                          () => ScreenCheckout(mealController: mealController),
-                        );
+                        Get.defaultDialog(
+                            title: "",
+                            content: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const Icon(
+                                  Icons.warning_amber_rounded,
+                                  color: ColorSystem.blue,
+                                  size: 60,
+                                ),
+                                const SizedBox(width: 10),
+                                SizedBox(
+                                  height: 80,
+                                  width: 200,
+                                  child: Text(
+                                    "Apakah anda yakin ingin membatalkan pesanan ini?",
+                                    style: TextSystem.subtitle.copyWith(
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 16,
+                                    ),
+                                    maxLines: 2,
+                                  ),
+                                )
+                              ],
+                            ),
+                            actions: [
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width / 3,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: ColorSystem.white,
+                                  ),
+                                  onPressed: () {
+                                    Get.back();
+                                  },
+                                  child: Text(
+                                    "Batal",
+                                    style: TextSystem.subtitle.copyWith(
+                                        color: ColorSystem.blue,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width / 3,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: ColorSystem.blue,
+                                  ),
+                                  onPressed: () {
+                                    Get.offAll(() => ScreenHome());
+                                    mealController.resetOrderData();
+                                  },
+                                  child: Text(
+                                    "Yakin",
+                                    style: TextSystem.subtitle.copyWith(
+                                        color: ColorSystem.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14),
+                                  ),
+                                ),
+                              ),
+                            ]);
                       },
                       child: Text(
-                        mealController.isCheckout.isTrue
-                            ? "Batalkan"
-                            : "Pesan Sekarang",
-                        style: TextSystem.content.copyWith(
-                          color: ColorSystem.white,
-                        ),
-                      ),
-                    ),
-                  const SizedBox(width: 5),
-                  if (mealController.quantities.isEmpty)
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey,
-                      ),
-                      onPressed: () {},
-                      child: Text(
-                        "Pesan Sekarang",
+                        "     Batalkan     ",
                         style: TextSystem.content.copyWith(
                           color: ColorSystem.white,
                         ),

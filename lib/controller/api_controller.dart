@@ -6,6 +6,7 @@ import 'package:flutter_venturo/utils/constant.dart';
 import 'package:get/get.dart';
 
 class MealController extends GetxController {
+  RxBool isCheckout = false.obs;
   final Dio _dio = Dio();
   final menuList = <DataMenu>[].obs;
   final noteList = <String>[].obs;
@@ -14,6 +15,8 @@ class MealController extends GetxController {
   RxMap notes = <int, RxString>{}.obs;
   RxList<DataVoucher> voucherList = <DataVoucher>[].obs;
   Rx<DataVoucher?> selectedVoucher = Rx<DataVoucher?>(null);
+
+  get onCheckoutPage => null;
 
   @override
   void onInit() {
@@ -109,12 +112,53 @@ class MealController extends GetxController {
           backgroundColor: Colors.red,
         );
       }
-    } catch (err) {}
-
-    print(totalPrice);
+    } catch (err) {
+      Get.snackbar(
+        "Gagal",
+        "Voucher Tidak Valid",
+        backgroundColor: Colors.red,
+      );
+    }
   }
 
   void resetVoucher() {
     selectedVoucher.value = null; // Fixed the assignment operator here
+  }
+
+  Future<void> postOrder() async {
+    try {
+      final List<Map<String, dynamic>> itemsData = quantities.keys
+          .map(
+            (itemId) => {
+              "id": itemId,
+              "harga": menuList.firstWhere((menu) => menu.id == itemId).harga,
+              "catatan": notes[itemId] ?? "",
+            },
+          )
+          .toList();
+
+      final Map<String, dynamic> orderData = {
+        "nominal_diskon": selectedVoucher.value?.nominal ?? "0",
+        "nominal_pesanan": totalPrice.value.toString(),
+        "items": itemsData,
+      };
+
+      final response = await _dio.post(baseUrlOrder, data: orderData);
+
+      if (response.statusCode == 201) {
+        Get.snackbar(
+          "Success",
+          "Pesanan Berhasil Ditambahkan",
+          backgroundColor: Colors.green,
+        );
+      }
+    } catch (err) {}
+  }
+
+  void resetOrderData() {
+    quantities.clear();
+    notes.clear();
+    totalPrice.value = 0;
+    selectedVoucher.value = null;
   }
 }
