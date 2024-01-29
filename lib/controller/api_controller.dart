@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_venturo/models/model_menu.dart';
+import 'package:flutter_venturo/models/model_order.dart';
 import 'package:flutter_venturo/models/model_voucher.dart';
 import 'package:flutter_venturo/utils/constant.dart';
+import 'package:flutter_venturo/views/screen_checkout.dart';
 import 'package:get/get.dart';
 
 class MealController extends GetxController {
@@ -122,37 +126,44 @@ class MealController extends GetxController {
   }
 
   void resetVoucher() {
-    selectedVoucher.value = null; // Fixed the assignment operator here
+    selectedVoucher.value = null;
   }
 
-  Future<void> postOrder() async {
+  Future<void> postOrder({
+    int? voucherId,
+    required int nominalDiskon,
+    required int nominalPesanan,
+    required List<Item> items,
+  }) async {
     try {
-      final List<Map<String, dynamic>> itemsData = quantities.keys
-          .map(
-            (itemId) => {
-              "id": itemId,
-              "harga": menuList.firstWhere((menu) => menu.id == itemId).harga,
-              "catatan": notes[itemId] ?? "",
-            },
-          )
-          .toList();
+      OrderModel orderModel = OrderModel(
+        nominalDiskon: nominalDiskon.toString(),
+        nominalPesanan: nominalPesanan.toString(),
+        items: items,
+      );
 
-      final Map<String, dynamic> orderData = {
-        "nominal_diskon": selectedVoucher.value?.nominal ?? "0",
-        "nominal_pesanan": totalPrice.value.toString(),
-        "items": itemsData,
+      String orderJson = orderModelToJson(orderModel);
+
+      Map<String, dynamic> requestData = {
+        'voucher_id': voucherId,
+        'nominal_diskon': nominalDiskon,
+        'nominal_pesanan': nominalPesanan,
+        'items': json.decode(orderJson)['items'],
       };
 
-      final response = await _dio.post(baseUrlOrder, data: orderData);
+      final response = await _dio.post(
+        baseUrlOrder,
+        data: requestData,
+      );
 
       if (response.statusCode == 201) {
-        Get.snackbar(
-          "Success",
-          "Pesanan Berhasil Ditambahkan",
-          backgroundColor: Colors.green,
-        );
+        print('Order created successfully');
+      } else {
+        print('Failed to create order. Status Code: ${response.statusCode}');
       }
-    } catch (err) {}
+    } catch (error) {
+      print('Error during API call: $error');
+    }
   }
 
   void resetOrderData() {

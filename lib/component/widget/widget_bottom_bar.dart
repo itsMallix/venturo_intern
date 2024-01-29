@@ -3,6 +3,7 @@ import 'package:flutter_venturo/component/theme/theme_colors.dart';
 import 'package:flutter_venturo/component/theme/theme_text.dart';
 import 'package:flutter_venturo/component/widget/widget_bottom_sheet_voucher.dart';
 import 'package:flutter_venturo/controller/api_controller.dart';
+import 'package:flutter_venturo/models/model_order.dart';
 import 'package:flutter_venturo/views/screen_checkout.dart';
 import 'package:get/get.dart';
 
@@ -173,20 +174,38 @@ class BottomBar extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: ColorSystem.blue,
                       ),
-                      onPressed: () {
-                        // if (mealController.isCheckout.value) {
-                        //   mealController.resetOrderData();
-                        //   Get.to(
-                        //     () => ScreenCheckout(
-                        //       mealController: mealController,
-                        //     ),
-                        //   );
-                        // } else {
-                        //   mealController.postOrder();
-                        // }
-                        Get.to(
-                          () => ScreenCheckout(mealController: mealController),
-                        );
+                      onPressed: () async {
+                        if (mealController.isCheckout.value) {
+                          mealController.resetOrderData();
+                          Get.to(
+                            () => ScreenCheckout(
+                              mealController: mealController,
+                            ),
+                          );
+                        } else {
+                          int? voucherId =
+                              mealController.selectedVoucher.value?.id ?? 0;
+                          int nominalDiskon =
+                              mealController.selectedVoucher.value?.nominal ??
+                                  0;
+                          int nominalPesanan = mealController.totalPrice.value;
+                          List<Item> items =
+                              mealController.quantities.keys.map((itemId) {
+                            return Item(
+                              id: itemId,
+                              harga: mealController.menuList
+                                  .firstWhere((menu) => menu.id == itemId)
+                                  .harga,
+                              catatan: mealController.notes[itemId] ?? "",
+                            );
+                          }).toList();
+                          await mealController.postOrder(
+                            voucherId: voucherId,
+                            nominalDiskon: nominalDiskon,
+                            nominalPesanan: nominalPesanan,
+                            items: items,
+                          );
+                        }
                       },
                       child: Text(
                         mealController.isCheckout.isTrue
