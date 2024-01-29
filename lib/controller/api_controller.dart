@@ -1,12 +1,11 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_venturo/models/model_menu.dart';
 import 'package:flutter_venturo/models/model_order.dart';
+import 'package:flutter_venturo/models/model_order_cancel.dart';
 import 'package:flutter_venturo/models/model_voucher.dart';
 import 'package:flutter_venturo/utils/constant.dart';
-import 'package:flutter_venturo/views/screen_checkout.dart';
 import 'package:get/get.dart';
 
 class MealController extends GetxController {
@@ -171,5 +170,25 @@ class MealController extends GetxController {
     notes.clear();
     totalPrice.value = 0;
     selectedVoucher.value = null;
+  }
+
+  Future<void> cancelOrder(String orderId) async {
+    try {
+      final CancelOrderModel cancelOrderModel =
+          CancelOrderModel(orderId: orderId);
+
+      final response = await _dio.post(
+        baseUrlCancelOrder,
+        data: cancelOrderModel.toMap(),
+      );
+
+      if (response.statusCode == 200) {
+        print('Order canceled successfully');
+      } else {
+        print('Failed to cancel order. Status Code: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Error during API call: $error');
+    }
   }
 }
