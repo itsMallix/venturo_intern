@@ -232,9 +232,10 @@ class BottomBarCheckout extends StatelessWidget {
                                   child: Text(
                                     "Yakin",
                                     style: TextSystem.subtitle.copyWith(
-                                        color: ColorSystem.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14),
+                                      color: ColorSystem.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
                                   ),
                                 ),
                               ),

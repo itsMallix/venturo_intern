@@ -19,7 +19,7 @@ class MealController extends GetxController {
   RxList<DataVoucher> voucherList = <DataVoucher>[].obs;
   Rx<DataVoucher?> selectedVoucher = Rx<DataVoucher?>(null);
 
-  get onCheckoutPage => null;
+  // get onCheckoutPage => null;
 
   @override
   void onInit() {
